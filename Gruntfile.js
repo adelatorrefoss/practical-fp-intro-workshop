@@ -2,17 +2,16 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        traceur: {
-            options: {},
-            custom: {
-                files: [{
-                    expand: true,
-                    cwd: "src",
-                    src: ["**/*.js"],
-                    dest: "_build"
-                }]
+        es6transpiler: {
+            options: {
+                disallowUnknownReferences: false
+            },
+            es6: {
+                expand: true,
+                cwd: "src",
+                src: ["**/*.js"],
+                dest: "_build"
             }
-
         },
 
         karma: {
@@ -24,7 +23,7 @@ module.exports = function(grunt) {
         watch: {
             scripts: {
                 files: ["src/**/*.js"],
-                tasks: ["traceur", "karma"],
+                tasks: ["es6transpiler", "karma"],
                 options: {
                     spawn: false
                 }
@@ -34,9 +33,9 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-traceur');
+    grunt.loadNpmTasks('grunt-es6-transpiler');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', ['watch', 'traceur', 'karma']);
+    grunt.registerTask('default', ['watch']);
 };
