@@ -9,4 +9,13 @@ describe('Tutorial examples', function(){
         var mul2add1 = compose(add1, mul2);
         expect(mul2add1(3)).to.be.equal(7);
     });
+
+    it('`flip` flips the arguments of a function', function (){
+        var argsAsArr = (...args) => args;
+
+        expect(argsAsArr(1, 2, 3)).to.be.eql([1, 2, 3]);
+
+        var reverseArgsAsArr = flip(argsAsArr);
+        expect(reverseArgsAsArr(1, 2, 3)).to.be.eql([3, 2, 1]);
+    });
 });
