@@ -144,12 +144,40 @@ var multiplier = (x) => (y) => x * y
 var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
 #+END_SRC
 
+
 *** Internal & External Iteration
 
+External iteration happens when the user explicitly iterates over a sequence, asking for each element (the ~for~ loop).
+This kind of iteration doesn't usually communicate its intent very well, we must read the code and figure out what is happening in the ~for~ loop.
+Furthermore, we usually iterate for doing one (or more) of the following:
+
+ - Transforming the elements of a sequence one by one, keeping its structure
+ - Filtering out the elements of the sequence that meet a certain condition
+ - Transforming the whole sequence to a value
+ - Performing an effect for each element of the sequence
+
+Wouldn't it be nice to be more explicit about the intent of the iteration and stop writing those archaic ~for~ loops? We
+can abstract each of the aforementioned patterns into functions and it yields a few benefits:
+
+ - Simpler, self-explaining code
+ - Ability to choose an iteration strategy suitable for each pattern (parallel vs. sequential)
+
+**** TODO Transformation
+
+#+BEGIN_SRC javascript
+#+END_SRC
+
+**** TODO Filtering
+
+**** TODO Reduction
+
+**** TODO Effects
+
+**** TODO Putting it all together
+
+*** TODO Currying & Partial Application
+
+*** TODO Inmutability
 
 
-*** Currying & Partial Application
-
-*** Inmutability
-
-** Where to go next
+** TODO Where to go next
