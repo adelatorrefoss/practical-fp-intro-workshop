@@ -1,0 +1,159 @@
+* Practical Introduction to Functional Programming
+
+
+As programmers, we want artifacts that are:
+- Reusable
+- Indepent
+- Loosely coupled
+- Composable
+- Abstract (I don't need to know how it works to use it)
+- Correct
+
+
+** INPROGRESS Setup for being able to write ES6
+** INPROGRESS Tests for verifying that exercises are right (koan-like)
+
+** The language
+
+ES6, JavaScript from the future.
+
+*** Arrow functions
+
+#+BEGIN_SRC javascript
+var identity = function (x) { return x; }
+
+// with arrow functions, anonymous functions can be written concisely as:
+
+var identity = (x) => x
+#+END_SRC
+
+*** Spread operator
+
+**** In function argument declarations
+
+- Can only appear in the end of the args list
+- Captures a variable number of arguments into an array
+- No need to use the broken `arguments` object again
+
+Some examples:
+#+BEGIN_SRC javascript
+((...xs) => xs)(1, 2, 3)
+//=> [1, 2, 3]
+
+((first, ...xs) => xs)(1, 2, 3)
+//=> [2, 3]
+
+((first, second, ...xs) => xs)(1, 2, 3)
+//=> [3]
+
+((first, second, third, ...xs) => xs)(1, 2, 3)
+//=> []
+#+END_SRC
+
+**** For calling functions
+
+- When we want to call a function with positional arguments but we have an array
+ + in ES5 we use ~Function.prototype.apply~
+ + in ES6 we can use the spread operator
+- Unlinke in function arguments, we aren't restricted to use it in the end of the arglist
+
+#+BEGIN_SRC javascript
+var add5 = (a, b, c, d, e) => a + b + c + d + e
+
+add5(...[1, 2, 3, 4, 5])
+//=> 15
+
+add5(1, ...[2, 3, 4, 5])
+//=> 15
+
+add5(1, ...[2, 3, 4], 5)
+//=> 15
+
+add5(1, ...[2, 3], 4, 5)
+//=> 15
+#+END_SRC
+
+** Basics
+
+*** What is functional programming?
+
+- Programming with inmutable data and pure functions
+- Treating functions as any other value
+
+*** Function Composition
+
+- Functions can be composed together to form new functions
+- A function composed of others applies them sequentially to the input
+- One-argument functions are trivial to compose
+
+#+BEGIN_SRC javascript
+compose = (f, g) => (x) => f(g(x))
+
+add1 = (x) => x + 1
+mul2 = (x) => x * 2
+
+compose(add1, mul2)(3)
+//=> 7
+compose(mul2, add1)(3)
+//=> 8
+#+END_SRC
+
+**** Exercises
+
+- [ ] Improve ~compose~ so the function it generates can take multiple arguments
+- [ ] Write a variadic version of ~compose~
+
+***** Solutions
+
+#+BEGIN_SRC javascript
+compose = (f, g) => (...xs) => f(g(...xs))
+
+composeAll = (...fs) => (x) => fs.reduceRight((res, f) => f(res), x)
+#+END_SRC
+
+*** Higher-order functions
+
+We talked about treating functions as values, so nothing is stopping us from passing them as arguments to functions or returning them.
+
+- Any function that takes and/or returns a function is called a higher-order function
+- Our ~compose~ function from before is a higher-order function
+
+We can write a combinator for flipping a function's arguments:
+#+BEGIN_SRC javascript
+flip = (f) => (...args) => f(...args.reverse())
+#+END_SRC
+
+Or a decorator that logs function calls:
+#+BEGIN_SRC javascript
+var logged = (f) =>
+    function(...args) {
+        console.log("Calling " + f.name + " with " + args);
+        return f(...args);
+    }
+#+END_SRC
+
+**** Exercises
+
+- [ ] Write a function that, given a number, returns a function that takes a number and adds it to the first
+- [ ] Write the same function for the multiplication operation
+- [ ] Write a function that, given a function, returns another function that calls to original one with all but the last argument
+
+***** Solutions
+
+#+BEGIN_SRC javascript
+var adder = (x) => (y) => x + y
+
+var multiplier = (x) => (y) => x * y
+
+var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
+#+END_SRC
+
+*** Internal & External Iteration
+
+
+
+*** Currying & Partial Application
+
+*** Inmutability
+
+** Where to go next
