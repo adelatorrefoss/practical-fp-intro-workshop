@@ -9,10 +9,6 @@ As programmers, we want artifacts that are:
 - Abstract (I don't need to know how it works to use it)
 - Correct
 
-
-** INPROGRESS Setup for being able to write ES6
-** INPROGRESS Tests for verifying that exercises are right (koan-like)
-
 ** The language
 
 ES6, JavaScript from the future.
@@ -100,8 +96,8 @@ compose(mul2, add1)(3)
 
 **** Exercises
 
-- [ ] Improve ~compose~ so the function it generates can take multiple arguments
-- [ ] Write a variadic version of ~compose~
+- Improve ~compose~ so the function it generates can take multiple arguments
+- Write a variadic version of ~compose~
 
 ***** Solutions
 
@@ -134,9 +130,9 @@ var logged = (f) =>
 
 **** Exercises
 
-- [ ] Write a function that, given a number, returns a function that takes a number and adds it to the first
-- [ ] Write the same function for the multiplication operation
-- [ ] Write a function that, given a function, returns another function that calls to original one with all but the last argument
+- Write a function that, given a number, returns a function that takes a number and adds it to the first
+- Write the same function for the multiplication operation
+- Write a function that, given a function, returns another function that calls to original one with all but the last argument
 
 ***** Solutions
 
