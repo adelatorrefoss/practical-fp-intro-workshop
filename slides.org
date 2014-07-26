@@ -75,37 +75,6 @@ add5(1, ...[2, 3], 4, 5)
 - Programming with inmutable data and pure functions
 - Treating functions as any other value
 
-*** Function Composition
-
-- Functions can be composed together to form new functions
-- A function composed of others applies them sequentially to the input
-- One-argument functions are trivial to compose
-
-#+BEGIN_SRC javascript
-compose = (f, g) => (x) => f(g(x))
-
-add1 = (x) => x + 1
-mul2 = (x) => x * 2
-
-compose(add1, mul2)(3)
-//=> 7
-compose(mul2, add1)(3)
-//=> 8
-#+END_SRC
-
-**** Exercises
-
-- Improve ~compose~ so the function it generates can take multiple arguments
-- Write a variadic version of ~compose~
-
-***** Solutions
-
-#+BEGIN_SRC javascript
-compose = (f, g) => (...xs) => f(g(...xs))
-
-composeAll = (...fs) => (x) => fs.reduceRight((res, f) => f(res), x)
-#+END_SRC
-
 *** Higher-order functions
 
 We talked about treating functions as values, so nothing is stopping us from passing them as arguments to functions or returning them.
@@ -159,6 +128,37 @@ var adder = (x) => (y) => x + y
 var multiplier = (x) => (y) => x * y
 
 var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
+#+END_SRC
+
+*** Function Composition
+
+- Functions can be composed together to form new functions
+- A function composed of others applies them sequentially to the input
+- One-argument functions are trivial to compose
+
+#+BEGIN_SRC javascript
+compose = (f, g) => (x) => f(g(x))
+
+add1 = (x) => x + 1
+mul2 = (x) => x * 2
+
+compose(add1, mul2)(3)
+//=> 7
+compose(mul2, add1)(3)
+//=> 8
+#+END_SRC
+
+**** Exercises
+
+- Improve ~compose~ so the function it generates can take multiple arguments
+- Write a variadic version of ~compose~
+
+***** Solutions
+
+#+BEGIN_SRC javascript
+compose = (f, g) => (...xs) => f(g(...xs))
+
+composeAll = (...fs) => (x) => fs.reduceRight((res, f) => f(res), x)
 #+END_SRC
 
 *** Recursion
