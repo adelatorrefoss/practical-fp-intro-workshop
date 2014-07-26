@@ -18,4 +18,15 @@ describe('Tutorial examples', function(){
         var reverseArgsAsArr = flip(argsAsArr);
         expect(reverseArgsAsArr(1, 2, 3)).to.be.eql([3, 2, 1]);
     });
+
+    it('`complement` complements a predicate', function (){
+        var isEven = (x) => x % 2 === 0;
+
+        expect(isEven(2)).to.be.true;
+        expect(isEven(3)).to.be.false;
+
+        var isOdd = complement(isEven);
+        expect(isOdd(2)).to.be.false;
+        expect(isOdd(3)).to.be.true;
+    });
 });

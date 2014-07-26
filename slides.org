@@ -1,6 +1,5 @@
 * Practical Introduction to Functional Programming
 
-
 As programmers, we want artifacts that are:
 - Reusable
 - Indepent
@@ -76,6 +75,7 @@ add5(1, ...[2, 3], 4, 5)
 - Programming with inmutable data and pure functions
 - Treating functions as any other value
 
+*** TODO Inmutability
 *** Function Composition
 
 - Functions can be composed together to form new functions
@@ -125,7 +125,25 @@ var logged = (f) =>
     function(...args) {
         console.log("Calling " + f.name + " with " + args);
         return f(...args);
-    }
+    };
+#+END_SRC
+
+Or a function that, given a key name, builds a getter for us:
+#+BEGIN_SRC javascript
+var pluck = (key) => (obj) => obj[key];
+#+END_SRC
+
+Or a function that, given a method name, builds a function that invokes it on an object for us:
+#+BEGIN_SRC javascript
+var invoke = (method) => (obj) => obj[method]();
+#+END_SRC
+
+And even a function that, given a predicate, returns the complement of it:
+#+BEGIN_SRC javascript
+var complement = (predicate) =>
+    function(...args) {
+        return !predicate(...args);
+    };
 #+END_SRC
 
 **** Exercises
@@ -144,6 +162,13 @@ var multiplier = (x) => (y) => x * y
 var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
 #+END_SRC
 
+*** TODO Recursion
+
+Recursion is a low-level operation and should be hidden behind an API.
+
+**** Self recursion
+
+**** Mutual recursion
 
 *** Internal & External Iteration
 
@@ -162,22 +187,171 @@ can abstract each of the aforementioned patterns into functions and it yields a 
  - Simpler, self-explaining code
  - Ability to choose an iteration strategy suitable for each pattern (parallel vs. sequential)
 
-**** TODO Transformation
+
+We'll only cover arrays for simplicity but the described patterns work for any sequence.
+
+**** Transformation
+
+A transformation is the mapping of a function to every element in the sequence, preserving
+its structure. Luckily, ES6 already has a ~map~ function that does what we want.
 
 #+BEGIN_SRC javascript
+[1, 2, 3].map((x) => x * x)
+//=> [1, 4, 9]
 #+END_SRC
 
-**** TODO Filtering
+Since transformations preserve the structure of the sequence, they can be chained:
 
-**** TODO Reduction
+#+BEGIN_SRC javascript
+[1, 2, 3].map((x) => x * x)
+         .map((x) => x - 1)
+//=> [0, 3, 8]
+#+END_SRC
 
-**** TODO Effects
+**** Filtering
 
-**** TODO Putting it all together
+Filtering consists of checking every element of the sequence agains a predicate and keeping only those elements for which the predicate is true.
+It does so preserving the sequence structure. Like for ~map~, arrays have a ~filter~ method:
+
+#+BEGIN_SRC javascript
+var isEven = (x) => (x % 2) === 0;
+
+[1, 2, 3, 4].filter(isEven)
+//=> [2, 4]
+#+END_SRC
+
+As with transformations, filters can be chained:
+
+#+BEGIN_SRC javascript
+var isOdd = complement(isEven);
+
+[1, 2, 3, 4].filter(isEven)
+            .filter(isOdd)
+//=> []
+#+END_SRC
+
+**** Reduction
+
+When we want to generate a value from a sequence and for that we need to visit some or all of its element, we are making a reduction.
+
+For reducing a sequence we need a two-argument function that gets applied to every element in the collection. This function's arguments
+are an accumulator for constructing the final value and a sequence element. The value that we return from the function becomes the
+accumulator in the next call to it.
+
+Let's see a simple example of ~reduce~ in action:
+#+BEGIN_SRC javascript
+[1, 2, 3].reduce((acc, x) => acc + x)
+//=> 6
+#+END_SRC
+
+But what happens when we have an empty sequence? ~[].reduce((acc, x) => acc + x)~ throws an error, but we can provide an optional
+argument that will be used as the base accumulator value so even empty sequences can be reduced.
+
+#+BEGIN_SRC javascript
+[].reduce((acc, x) => acc + x, 0)
+//=> 0
+#+END_SRC
+
+We can use this trait of ~reduce~ for setting the first value of the accumulator like in the following example:
+#+BEGIN_SRC javascript
+[1, 2, 3].reduce((acc, x) => [x].concat(acc), [])
+//=> [3, 2, 1]
+#+END_SRC
+
+***** TODO right and left folds
+
+**** Effects
+
+Sometimes we need to iterate over a sequence because we need to perform a effect for each of its items. We can use the ~forEach~ function for this purpose.
+
+Here is a contrived example of ~forEach~ usage:
+#+BEGIN_SRC javascript
+[1, 2, 3].forEach((i) => document.querySelector("#item-" + i).remove())
+#+END_SRC
+
+**** Putting it all together
+
+You are probably aware by now that the structure-preserving functions that we learned to use can be chained together. We'll frequently find ourselves using more than
+one of them for processing sequences of data.
+
+#+BEGIN_SRC javascript
+var people = [
+    {name: "Alejandro", language: "Clojure", onHolidays: false},
+    {name: "Alonso", language: "Groovy", onHolidays: false},
+    {name: "Jesús", language: "Python", onHolidays: false},
+    {name: "Andrey", language: "Clojure", onHolidays: true}
+];
+
+// People that are on holidays
+people.filter(pluck('onHolidays'));
+
+// People that aren't on holidays
+people.filter(complement(pluck('onHolidays')));
+
+// Names of the people that aren't on holidays
+people.filter(complement(pluck('onHolidays')))
+      .map(pluck('name'));
+
+// Languages that people that aren't on holidays use, on UPPERCASE
+people.filter(complement(pluck('onHolidays')))
+      .map(pluck('language'))
+      .map(invoke('toUpperCase'));
+#+END_SRC
+
+***** Exercises
+
+- Write your own version of ~map~, ~filter~ and ~reduce~ (you are allowed to use ~for~ loops and mutation)
+
+****** Solutions
+
+#+BEGIN_SRC javascript
+var map = function(f, xs) {
+    var result = [];
+
+    for(let i = 0; i < xs.length; i++) {
+        result.push(f(xs[i]));
+    }
+
+    return result;
+};
+
+var filter = function(p, xs) {
+    var result = [];
+
+    for(let i = 0; i < xs.length; i++) {
+        let elem = xs[i];
+        if (p(elem)) result.push(elem);
+    }
+
+    return result;
+};
+
+var reduce = function(rf, xs, maybeAcc) {
+    if (maybeAcc === undefined) {
+        if (xs.length === 0) {
+            throw TypeError("reduce of empty array with no initial value");
+        }
+
+        acc = xs[0];
+        arr = xs.slice(1);
+    } else {
+        acc = maybeAcc;
+        arr = xs;
+    }
+
+    for(let i = 0; i < arr.length; i++) {
+        acc = rf(acc, arr[i]);
+    }
+
+    return acc;
+};
+#+END_SRC
+
 
 *** TODO Currying & Partial Application
 
-*** TODO Inmutability
-
-
 ** TODO Where to go next
+*** Lazyness
+#+BEGIN_SRC javascript
+
+#+END_SRC
