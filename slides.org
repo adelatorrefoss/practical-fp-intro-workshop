@@ -76,6 +76,7 @@ add5(1, ...[2, 3], 4, 5)
 - Treating functions as any other value
 
 *** TODO Inmutability
+
 *** Function Composition
 
 - Functions can be composed together to form new functions
@@ -323,8 +324,6 @@ We can use this trait of ~reduce~ for setting the first value of the accumulator
 //=> [3, 2, 1]
 #+END_SRC
 
-***** TODO right and left folds
-
 **** Effects
 
 Sometimes we need to iterate over a sequence because we need to perform a effect for each of its items. We can use the ~forEach~ function for this purpose.
@@ -413,10 +412,63 @@ var reduce = function(rf, xs, maybeAcc) {
 #+END_SRC
 
 
-*** TODO Currying & Partial Application
+*** Currying & Partial Application
 
-** TODO Where to go next
-*** Lazyness
+So far, we've seen a way to form new functions out of existing ones: function composition. However, this is less than ideal since we can't
+generate new functions by specifying only some of its arguments. The techniques we'll cover now will allow us to do so.
+
+***** Currying
+
+A curried function is one that only takes one parameter, and it may return a value or another function. We can convert any function to a curried function.
+
+For example, let's see how a curried function that sums three numbers would look like:
+
 #+BEGIN_SRC javascript
+var curriedSum3 = (x) => (y) => (z) => x + y + z;
 
+curriedSum3(1)(2)(3)
+//=> 6
 #+END_SRC
+
+***** Partial application
+
+Partial application is related to currying but is not exactly the same. It means that we specify part of the arguments to a function and we
+get a new one that only expects the ones that are missing.
+
+Let's write the counterpart of our ~pluck~ function and see how we can use ~Function.prototype.bind~ for partial application:
+#+BEGIN_SRC javascript
+var setter = function(key, val, obj){
+    obj[key] = val;
+    return obj;
+};
+
+// We partially apply setter with "happy" (key) and true (val) and we get a function back
+var cheer = setter.bind(null, 'happy', true);
+
+cheer({name: "Alejandro"})
+//=> {name: "Alejandro", happy: true}
+#+END_SRC
+
+****** Final exercise
+
+- Write a function that takes a function that we know takes positional arguments and returns another function that accepts as many parameters as
+  the first one but, when not supplying enough of them, returns another function. Try to apply some of the concepts learned today.
+
+******** Solution
+
+#+BEGIN_SRC javascript
+var autoCurry = function(f, argsAcc = [], remaining = f.length) {
+    return function(...args){
+        let allArgs = argsAcc.concat(args);
+
+        if (args.length >= remaining) return f(...allArgs);
+        else                          return autoCurry(f, allArgs, remaining - args.length)
+    }
+};
+#+END_SRC
+
+** What's next
+
+- Start applying these techniques in your programs
+- Learn a lazy, purely functional, statically typed language like Haskell
+- Learn a dynamic functional language like Clojure
