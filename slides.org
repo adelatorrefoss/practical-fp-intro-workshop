@@ -162,13 +162,78 @@ var multiplier = (x) => (y) => x * y
 var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
 #+END_SRC
 
-*** TODO Recursion
 
-Recursion is a low-level operation and should be hidden behind an API.
+*** Recursion
+
+When a function calls another in its return position is using recursion. Some problems translate very naturally to recursive solutions
+but in general it's not used very much, partly because the lack of optimizations for it in modern compilers. However, ES6 brings TCO
+(tail call optimization) to the language so we'll be able to write recursive functions without fear of blowing the stack.
+
+Some people argue that recursion is a low-level operation and should be hidden behind an API.
 
 **** Self recursion
 
+We call a function self-recursive if it recurs on itself.
+
+Many mathematical functions, like factorial, are intuitively implemented in this manner:
+#+BEGIN_SRC javascript
+var factorial = function (n) {
+    if (n > 1) return n * factorial(n - 1);
+    else       return n;
+}
+
+// We can also write it in an accumulator-passing style
+var factorialAcc = function (n, result = 1) {
+    if (n > 1) return factorialAcc(n - 1, n * result);
+    else       return result;
+}
+#+END_SRC
+
 **** Mutual recursion
+
+We call a set of functions mutually recursive when they recur on each other.
+
+Here are a couple of mutually recursive functions:
+#+BEGIN_SRC javascript
+var isOddRec = function (n) {
+    if (n == 1) return true;
+    else        return isEvenRec(n - 1);
+}
+
+var isEvenRec = function (n) {
+    if (n == 1) return false;
+    else        return isOddRec(n - 1);
+}
+#+END_SRC
+
+***** Exercises
+
+- Write a recursive function that, given a value and a list, returns a list with the first occurrence of the value removed
+- Write the same function in accumulator-passing style
+
+#+BEGIN_SRC javascript
+var cons = (v, xs) => [v].concat(xs);
+
+var rember = function(v, xs) {
+    if (xs.length === 0)  return [];
+
+    let head = xs[0],
+        tail = xs.slice(1);
+
+    if (head === v) return tail;
+    else            return cons(head, rember(v, tail));
+};
+
+var remberAcc = function(v, xs, acc = []) {
+    if (xs.length === 0)  return acc;
+
+    let head = xs[0],
+        tail = xs.slice(1);
+
+    if (head === v) return acc.concat(tail);
+    else            return remberAcc(v, tail, acc.concat([head]));
+};
+#+END_SRC
 
 *** Internal & External Iteration
 
