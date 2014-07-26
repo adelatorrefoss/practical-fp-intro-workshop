@@ -75,8 +75,6 @@ add5(1, ...[2, 3], 4, 5)
 - Programming with inmutable data and pure functions
 - Treating functions as any other value
 
-*** TODO Inmutability
-
 *** Function Composition
 
 - Functions can be composed together to form new functions
@@ -162,7 +160,6 @@ var multiplier = (x) => (y) => x * y
 
 var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
 #+END_SRC
-
 
 *** Recursion
 
