@@ -82,12 +82,7 @@ We talked about treating functions as values, so nothing is stopping us from pas
 - Any function that takes and/or returns a function is called a higher-order function
 - Our ~compose~ function from before is a higher-order function
 
-We can write a combinator for flipping a function's arguments:
-#+BEGIN_SRC javascript
-flip = (f) => (...args) => f(...args.reverse())
-#+END_SRC
-
-Or a decorator that logs function calls:
+We can write a decorator that logs function calls:
 #+BEGIN_SRC javascript
 var logged = (f) =>
     function(...args) {
@@ -106,7 +101,7 @@ Or a function that, given a method name, builds a function that invokes it on an
 var invoke = (method) => (obj) => obj[method]();
 #+END_SRC
 
-And even a function that, given a predicate, returns the complement of it:
+Or a function that, given a predicate, returns the complement of it:
 #+BEGIN_SRC javascript
 var complement = (predicate) =>
     function(...args) {
@@ -114,6 +109,10 @@ var complement = (predicate) =>
     };
 #+END_SRC
 
+And even a function for flipping a function's arguments:
+#+BEGIN_SRC javascript
+flip = (f) => (...args) => f(...args.reverse())
+#+END_SRC
 **** Exercises
 
 - Write a function that, given a number, returns a function that takes a number and adds it to the first
