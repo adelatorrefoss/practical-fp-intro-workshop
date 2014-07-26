@@ -113,6 +113,7 @@ And even a function for flipping a function's arguments:
 #+BEGIN_SRC javascript
 flip = (f) => (...args) => f(...args.reverse())
 #+END_SRC
+
 **** Exercises
 
 - Write a function that, given a number, returns a function that takes a number and adds it to the first
