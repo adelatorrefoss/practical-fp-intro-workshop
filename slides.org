@@ -14,7 +14,7 @@ ES6, JavaScript from the future.
 
 *** Arrow functions
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var identity = function (x) { return x; }
 
 // with arrow functions, anonymous functions can be written concisely as:
@@ -31,7 +31,7 @@ var identity = (x) => x
 - No need to use the broken `arguments` object again
 
 Some examples:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 ((...xs) => xs)(1, 2, 3)
 //=> [1, 2, 3]
 
@@ -52,7 +52,7 @@ Some examples:
  + in ES6 we can use the spread operator
 - Unlinke in function arguments, we aren't restricted to use it in the end of the arglist
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var add5 = (a, b, c, d, e) => a + b + c + d + e
 
 add5(...[1, 2, 3, 4, 5])
@@ -83,7 +83,7 @@ We talked about treating functions as values, so nothing is stopping us from pas
 - Our ~compose~ function from before is a higher-order function
 
 We can write a decorator that logs function calls:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var logged = (f) =>
     function(...args) {
         console.log("Calling " + f.name + " with " + args);
@@ -92,17 +92,17 @@ var logged = (f) =>
 #+END_SRC
 
 Or a function that, given a key name, builds a getter for us:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var pluck = (key) => (obj) => obj[key];
 #+END_SRC
 
 Or a function that, given a method name, builds a function that invokes it on an object for us:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var invoke = (method) => (obj) => obj[method]();
 #+END_SRC
 
 Or a function that, given a predicate, returns the complement of it:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var complement = (predicate) =>
     function(...args) {
         return !predicate(...args);
@@ -110,7 +110,7 @@ var complement = (predicate) =>
 #+END_SRC
 
 And even a function for flipping a function's arguments:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 flip = (f) => (...args) => f(...args.reverse())
 #+END_SRC
 
@@ -122,7 +122,7 @@ flip = (f) => (...args) => f(...args.reverse())
 
 ***** Solutions
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var adder = (x) => (y) => x + y
 
 var multiplier = (x) => (y) => x * y
@@ -136,7 +136,7 @@ var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
 - A function composed of others applies them sequentially to the input
 - One-argument functions are trivial to compose
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 compose = (f, g) => (x) => f(g(x))
 
 add1 = (x) => x + 1
@@ -155,7 +155,7 @@ compose(mul2, add1)(3)
 
 ***** Solutions
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 compose = (f, g) => (...xs) => f(g(...xs))
 
 composeAll = (...fs) => (x) => fs.reduceRight((res, f) => f(res), x)
@@ -174,7 +174,7 @@ Some people argue that recursion is a low-level operation and should be hidden b
 We call a function self-recursive if it recurs on itself.
 
 Many mathematical functions, like factorial, are intuitively implemented in this manner:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var factorial = function (n) {
     if (n > 1) return n * factorial(n - 1);
     else       return n;
@@ -192,7 +192,7 @@ var factorialAcc = function (n, result = 1) {
 We call a set of functions mutually recursive when they recur on each other.
 
 Here are a couple of mutually recursive functions:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var isOddRec = function (n) {
     if (n == 1) return true;
     else        return isEvenRec(n - 1);
@@ -209,7 +209,7 @@ var isEvenRec = function (n) {
 - Write a recursive function that, given a value and a list, returns a list with the first occurrence of the value removed
 - Write the same function in accumulator-passing style
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var cons = (v, xs) => [v].concat(xs);
 
 var rember = function(v, xs) {
@@ -258,14 +258,14 @@ We'll only cover arrays for simplicity but the described patterns work for any s
 A transformation is the mapping of a function to every element in the sequence, preserving
 its structure. Luckily, ES6 already has a ~map~ function that does what we want.
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 [1, 2, 3].map((x) => x * x)
 //=> [1, 4, 9]
 #+END_SRC
 
 Since transformations preserve the structure of the sequence, they can be chained:
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 [1, 2, 3].map((x) => x * x)
          .map((x) => x - 1)
 //=> [0, 3, 8]
@@ -276,7 +276,7 @@ Since transformations preserve the structure of the sequence, they can be chaine
 Filtering consists of checking every element of the sequence agains a predicate and keeping only those elements for which the predicate is true.
 It does so preserving the sequence structure. Like for ~map~, arrays have a ~filter~ method:
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var isEven = (x) => (x % 2) === 0;
 
 [1, 2, 3, 4].filter(isEven)
@@ -285,7 +285,7 @@ var isEven = (x) => (x % 2) === 0;
 
 As with transformations, filters can be chained:
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var isOdd = complement(isEven);
 
 [1, 2, 3, 4].filter(isEven)
@@ -302,7 +302,7 @@ are an accumulator for constructing the final value and a sequence element. The 
 accumulator in the next call to it.
 
 Let's see a simple example of ~reduce~ in action:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 [1, 2, 3].reduce((acc, x) => acc + x)
 //=> 6
 #+END_SRC
@@ -310,13 +310,13 @@ Let's see a simple example of ~reduce~ in action:
 But what happens when we have an empty sequence? ~[].reduce((acc, x) => acc + x)~ throws an error, but we can provide an optional
 argument that will be used as the base accumulator value so even empty sequences can be reduced.
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 [].reduce((acc, x) => acc + x, 0)
 //=> 0
 #+END_SRC
 
 We can use this trait of ~reduce~ for setting the first value of the accumulator like in the following example:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 [1, 2, 3].reduce((acc, x) => [x].concat(acc), [])
 //=> [3, 2, 1]
 #+END_SRC
@@ -326,7 +326,7 @@ We can use this trait of ~reduce~ for setting the first value of the accumulator
 Sometimes we need to iterate over a sequence because we need to perform a effect for each of its items. We can use the ~forEach~ function for this purpose.
 
 Here is a contrived example of ~forEach~ usage:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 [1, 2, 3].forEach((i) => document.querySelector("#item-" + i).remove())
 #+END_SRC
 
@@ -335,7 +335,7 @@ Here is a contrived example of ~forEach~ usage:
 You are probably aware by now that the structure-preserving functions that we learned to use can be chained together. We'll frequently find ourselves using more than
 one of them for processing sequences of data.
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var people = [
     {name: "Alejandro", language: "Clojure", onHolidays: false},
     {name: "Alonso", language: "Groovy", onHolidays: false},
@@ -365,7 +365,7 @@ people.filter(complement(pluck('onHolidays')))
 
 ****** Solutions
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var map = function(f, xs) {
     var result = [];
 
@@ -420,7 +420,7 @@ A curried function is one that only takes one parameter, and it may return a val
 
 For example, let's see how a curried function that sums three numbers would look like:
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var curriedSum3 = (x) => (y) => (z) => x + y + z;
 
 curriedSum3(1)(2)(3)
@@ -433,7 +433,7 @@ Partial application is related to currying but is not exactly the same. It means
 get a new one that only expects the ones that are missing.
 
 Let's write the counterpart of our ~pluck~ function and see how we can use ~Function.prototype.bind~ for partial application:
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var setter = function(key, val, obj){
     obj[key] = val;
     return obj;
@@ -453,7 +453,7 @@ cheer({name: "Alejandro"})
 
 ******** Solution
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC js
 var autoCurry = function(f, argsAcc = [], remaining = f.length) {
     return function(...args){
         let allArgs = argsAcc.concat(args);
