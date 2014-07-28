@@ -120,16 +120,6 @@ flip = (f) => (...args) => f(...args.reverse())
 - Write the same function for the multiplication operation
 - Write a function that, given a function, returns another function that calls to original one with all but the last argument
 
-***** Solutions
-
-#+BEGIN_SRC js
-var adder = (x) => (y) => x + y
-
-var multiplier = (x) => (y) => x * y
-
-var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
-#+END_SRC
-
 *** Function Composition
 
 - Functions can be composed together to form new functions
@@ -152,14 +142,6 @@ compose(mul2, add1)(3)
 
 - Improve ~compose~ so the function it generates can take multiple arguments
 - Write a variadic version of ~compose~
-
-***** Solutions
-
-#+BEGIN_SRC js
-compose = (f, g) => (...xs) => f(g(...xs))
-
-composeAll = (...fs) => (x) => fs.reduceRight((res, f) => f(res), x)
-#+END_SRC
 
 *** Recursion
 
@@ -363,52 +345,6 @@ people.filter(complement(pluck('onHolidays')))
 
 - Write your own version of ~map~, ~filter~ and ~reduce~ (you are allowed to use ~for~ loops and mutation)
 
-****** Solutions
-
-#+BEGIN_SRC js
-var map = function(f, xs) {
-    var result = [];
-
-    for(let i = 0; i < xs.length; i++) {
-        result.push(f(xs[i]));
-    }
-
-    return result;
-};
-
-var filter = function(p, xs) {
-    var result = [];
-
-    for(let i = 0; i < xs.length; i++) {
-        let elem = xs[i];
-        if (p(elem)) result.push(elem);
-    }
-
-    return result;
-};
-
-var reduce = function(rf, xs, maybeAcc) {
-    if (maybeAcc === undefined) {
-        if (xs.length === 0) {
-            throw TypeError("reduce of empty array with no initial value");
-        }
-
-        acc = xs[0];
-        arr = xs.slice(1);
-    } else {
-        acc = maybeAcc;
-        arr = xs;
-    }
-
-    for(let i = 0; i < arr.length; i++) {
-        acc = rf(acc, arr[i]);
-    }
-
-    return acc;
-};
-#+END_SRC
-
-
 *** Currying & Partial Application
 
 So far, we've seen a way to form new functions out of existing ones: function composition. However, this is less than ideal since we can't
@@ -450,19 +386,6 @@ cheer({name: "Alejandro"})
 
 - Write a function that takes a function that we know takes positional arguments and returns another function that accepts as many parameters as
   the first one but, when not supplying enough of them, returns another function. Try to apply some of the concepts learned today.
-
-******** Solution
-
-#+BEGIN_SRC js
-var autoCurry = function(f, argsAcc = [], remaining = f.length) {
-    return function(...args){
-        let allArgs = argsAcc.concat(args);
-
-        if (args.length >= remaining) return f(...allArgs);
-        else                          return autoCurry(f, allArgs, remaining - args.length)
-    }
-};
-#+END_SRC
 
 ** What's next
 

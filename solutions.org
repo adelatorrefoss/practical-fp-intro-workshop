@@ -1,0 +1,69 @@
+* Solutions
+
+#+BEGIN_SRC js
+var adder = (x) => (y) => x + y
+
+var multiplier = (x) => (y) => x * y
+
+var callWithAllButLast = (f) => (...args) => f(...args.slice(0, -1))
+#+END_SRC
+
+#+BEGIN_SRC js
+compose = (f, g) => (...xs) => f(g(...xs))
+
+composeAll = (...fs) => (x) => fs.reduceRight((res, f) => f(res), x)
+#+END_SRC
+
+#+BEGIN_SRC js
+var map = function(f, xs) {
+    var result = [];
+
+    for(let i = 0; i < xs.length; i++) {
+        result.push(f(xs[i]));
+    }
+
+    return result;
+};
+
+var filter = function(p, xs) {
+    var result = [];
+
+    for(let i = 0; i < xs.length; i++) {
+        let elem = xs[i];
+        if (p(elem)) result.push(elem);
+    }
+
+    return result;
+};
+
+var reduce = function(rf, xs, maybeAcc) {
+    if (maybeAcc === undefined) {
+        if (xs.length === 0) {
+            throw TypeError("reduce of empty array with no initial value");
+        }
+
+        acc = xs[0];
+        arr = xs.slice(1);
+    } else {
+        acc = maybeAcc;
+        arr = xs;
+    }
+
+    for(let i = 0; i < arr.length; i++) {
+        acc = rf(acc, arr[i]);
+    }
+
+    return acc;
+};
+#+END_SRC
+
+#+BEGIN_SRC js
+var autoCurry = function(f, argsAcc = [], remaining = f.length) {
+    return function(...args){
+        let allArgs = argsAcc.concat(args);
+
+        if (args.length >= remaining) return f(...allArgs);
+        else                          return autoCurry(f, allArgs, remaining - args.length)
+    }
+};
+#+END_SRC
