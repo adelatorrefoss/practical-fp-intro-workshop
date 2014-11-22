@@ -1,5 +1,17 @@
 * Practical Introduction to Functional Programming
 
+https://github.com/dialelo/practical-fp-intro-workshop
+
+** $whoami
+
+- My name is Alejandro
+- I'm dialelo on the vast internets
+- I work in Kaleidos Open Source
+
+[[./kaleidos_logo.png]]
+
+** Why?
+
 As programmers, we want artifacts that are:
 - Reusable
 - Indepent
