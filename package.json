@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "repository": "https://github.com/alejandrogomez/practical-fp-intro-workshop",
   "devDependencies": {
-    "chai": "^1.9.1",
-    "karma": "^0.12.16",
-    "karma-chai": "^0.1.0",
+    "chai": "1.9.1",
+    "karma": "0.12.16",
+    "karma-chai": "0.1.0",
     "karma-phantomjs-launcher": "~0.1",
-    "karma-mocha": "^0.1.4",
-    "mocha": "^1.20.1",
+    "karma-mocha": "0.1.4",
+    "mocha": "1.20.1",
     "grunt-es6-transpiler": "0.1.0",
     "grunt-karma": "0.8.0",
     "grunt-contrib-watch": "0.6.1"
