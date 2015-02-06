@@ -33,41 +33,59 @@ describe('Tutorial examples', function(){
 
 
 describe('Function composition', function(){
-    it.skip('Improve ~compose~ so the function it generates can take multiple arguments', function(){
+    it('Improve ~compose~ so the function it generates can take multiple arguments', function(){
         var argsAsArr = (...args) => args;
         var length = (xs) => xs.length;
 
-        betterCompose = () => null;
+        betterCompose = (f,g) => (...args) => f(g(...args));
 
         expect(betterCompose(length, argsAsArr)(1, 2)).to.be.equal(2);
+        expect(betterCompose(length, argsAsArr)(1, 2, 3)).to.be.equal(3);
     });
 
-    it.skip('Write a variadic version of ~compose~', function(){
+    it('Write a variadic version of ~compose~', function(){
         var add1 = (x) => x + 1;
+        var mul2 = (x) => x * 2;
 
-        composeAll = () => null;
+
+        // TODO try reduce right
+        composeAll = (...funcs) => (x) => funcs
+
+
+        // composeAll = (func0, ...funcs) => (x) => (funcs.length === 0)? func0(x):func0(composeAll(...funcs)(x))
+
+        // composeAll = (...args) => (x) => {
+        //     var res = x
+        //     var operations = args.reverse();
+        //     for (var i = 0; i < operations.length; i++) {
+        //         res = operations[i](res);
+        //     }
+        //     return res;
+        // }
 
         expect(composeAll(add1, add1, add1)(0)).to.be.equal(3);
+        expect(composeAll(add1, add1, add1,add1)(0)).to.be.equal(4);
+        expect(composeAll(mul2, add1)(0)).to.be.equal(2);
     });
 });
 
 describe('Higher order functions', function(){
-    it.skip('Write a function that, given a number, returns a function that takes a number and adds it to the first', function(){
-        adder = () => null;
+    it('Write a function that, given a number, returns a function that takes a number and adds it to the first', function(){
+        var adder = (first) => (second) => (first + second);
 
         expect(adder(3)(4)).to.be.equal(7);
     });
 
-    it.skip('Write the same function for the multiplication operation', function(){
-        multiplier = () => null;
+    it('Write the same function for the multiplication operation', function(){
+        multiplier = (first) => (second) => first * second;
 
         expect(multiplier(3)(4)).to.be.equal(12);
         expect(multiplier(2)(4)).to.be.equal(8);
     });
 
-    it.skip('Write a function that, given a function, returns another function that calls to original one with all but the last argument', function(){
+    it('Write a function that, given a function, returns another function that calls to original one with all but the last argument', function(){
         var argLength = (...args) => args.length;
-        var callWithAllButLast = () => null;
+        var callWithAllButLast = (f) => (...args) => f(...args.slice(0,-1))
 
         expect(callWithAllButLast(argLength)(1, 2, 3)).to.be.equal(2);
     });
